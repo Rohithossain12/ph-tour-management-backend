@@ -10,7 +10,7 @@ dotenv.config();
 
 const startServer = async () => {
     try {
-        await mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.uv360.mongodb.net/tour-management-backend?retryWrites=true&w=majority&appName=Cluster0`);
+        await mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.uv360.mongodb.net/tour-db?retryWrites=true&w=majority&appName=Cluster0`);
         console.log("Connected to DB");
 
         server = app.listen(PORT, () => {
