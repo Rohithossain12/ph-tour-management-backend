@@ -3,26 +3,30 @@ import { Server } from "http";
 import mongoose from "mongoose";
 import app from "./app";
 import dotenv from 'dotenv';
+import { seedSupperAdmin } from "./app/utils/seedSupperAdmin";
+import { envVars } from "./app/config/env";
 
 
 let server: Server;
-const PORT = 5000;
 dotenv.config();
 
 const startServer = async () => {
     try {
-        await mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.uv360.mongodb.net/tour-db?retryWrites=true&w=majority&appName=Cluster0`);
+        await mongoose.connect(envVars.DB_URL);
         console.log("Connected to DB");
 
-        server = app.listen(PORT, () => {
-            console.log(`Server is listening on PORT ${PORT}`);
+        server = app.listen(envVars.PORT, () => {
+            console.log(`Server is listening on PORT ${envVars.PORT}`);
         });
     } catch (error) {
         console.error(error);
     }
 };
-
-startServer();
+(
+    async () => {
+      await  startServer()
+      await  seedSupperAdmin()
+    })()
 
 process.on("SIGTERM", () => {
     console.log("SIGTERM signal recieved....server shutting down..");
