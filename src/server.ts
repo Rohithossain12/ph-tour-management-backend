@@ -5,6 +5,7 @@ import app from "./app";
 import dotenv from 'dotenv';
 import { seedSupperAdmin } from "./app/utils/seedSupperAdmin";
 import { envVars } from "./app/config/env";
+import { redisConnect } from "./app/config/redis.config";
 
 
 let server: Server;
@@ -24,8 +25,9 @@ const startServer = async () => {
 };
 (
     async () => {
-      await  startServer()
-      await  seedSupperAdmin()
+        await redisConnect()
+        await startServer()
+        await seedSupperAdmin()
     })()
 
 process.on("SIGTERM", () => {
