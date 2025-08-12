@@ -5,15 +5,7 @@ import { DivisionController } from "./division.controller";
 import { createDivisionSchema, updateDivisionSchema } from "./division.validation";
 import { Role } from "../user/user.interface";
 import { multerUpload } from "../../config/multer.config";
-// import { multerUpload } from "../../config/multer.config";
-// import { checkAuth } from "../../middlewares/checkAuth";
-// import { validateRequest } from "../../middlewares/validateRequest";
-// import { Role } from "../user/user.interface";
-// import { DivisionController } from "./division.controller";
-// import {
-//     createDivisionSchema,
-//     updateDivisionSchema
-// } from "./division.validation";
+
 
 const router = Router()
 /*
