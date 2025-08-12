@@ -103,27 +103,52 @@ const createBooking = async (payload: Partial<IBooking>, userId: string) => {
 
 
 
-
-const getUserBookings = async () => {
-
-    return {}
+const getUserBookings = async (userId: string) => {
+    const bookings = await Booking.find({ user: userId })
+        .populate("user", "name email phone address")
+        .populate("tour", "title costFrom")
+        .populate("payment");
+    return bookings;
 };
 
-const getBookingById = async () => {
-    return {}
+const getBookingById = async (bookingId: string) => {
+  
+    const booking = await Booking.findById(bookingId)
+        .populate("user", "name email phone address")
+        .populate("tour", "title costFrom")
+        .populate("payment");
+
+    if (!booking) {
+        throw new AppError(httpStatus.NOT_FOUND, "Booking not found");
+    }
+    return booking;
 };
 
-const updateBookingStatus = async (
+const updateBookingStatus = async (bookingId: string, status: BOOKING_STATUS) => {
+    const updatedBooking = await Booking.findByIdAndUpdate(
+        bookingId,
+        { status },
+        { new: true, runValidators: true }
+    )
+        .populate("user", "name email phone address")
+        .populate("tour", "title costFrom")
+        .populate("payment");
 
-) => {
-
-    return {}
+    if (!updatedBooking) {
+        throw new AppError(httpStatus.NOT_FOUND, "Booking not found");
+    }
+    return updatedBooking;
 };
 
 const getAllBookings = async () => {
+    const bookings = await Booking.find()
+        .populate("user", "name email phone address")
+        .populate("tour", "title costFrom")
+        .populate("payment");
 
-    return {}
+    return bookings;
 };
+
 
 export const BookingService = {
     createBooking,

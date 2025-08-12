@@ -17,7 +17,8 @@ const createBooking = catchAsync(async (req: Request, res: Response) => {
 
 const getUserBookings = catchAsync(
     async (req: Request, res: Response) => {
-        const bookings = await BookingService.getUserBookings();
+        const decodeToken = req.user as JwtPayload;
+        const bookings = await BookingService.getUserBookings(decodeToken.userId);
         sendResponse(res, {
             statusCode: 200,
             success: true,
@@ -26,9 +27,11 @@ const getUserBookings = catchAsync(
         });
     }
 );
+
 const getSingleBooking = catchAsync(
     async (req: Request, res: Response) => {
-        const booking = await BookingService.getBookingById();
+        const bookingId = req.params.id;
+        const booking = await BookingService.getBookingById(bookingId);
         sendResponse(res, {
             statusCode: 200,
             success: true,
@@ -38,10 +41,11 @@ const getSingleBooking = catchAsync(
     }
 );
 
+
 const getAllBookings = catchAsync(
     async (req: Request, res: Response) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const bookings = await BookingService.getAllBookings();
+
+        await BookingService.getAllBookings();
         sendResponse(res, {
             statusCode: 200,
             success: true,
@@ -54,9 +58,13 @@ const getAllBookings = catchAsync(
 
 const updateBookingStatus = catchAsync(
     async (req: Request, res: Response) => {
+        const { bookingId } = req.params;
+        const { status } = req.body;
 
         const updated = await BookingService.updateBookingStatus(
-        );
+            bookingId,
+            status);
+
         sendResponse(res, {
             statusCode: 200,
             success: true,
@@ -64,7 +72,7 @@ const updateBookingStatus = catchAsync(
             data: updated,
         });
     }
-);
+)
 
 
 export const BookingController = {
