@@ -11,15 +11,16 @@ import { envVars } from "./app/config/env";
 
 const app = express();
 app.use(expressSession({
-    secret:"your secret",
-    resave:false,
-    saveUninitialized:false
+    secret: "your secret",
+    resave: false,
+    saveUninitialized: false
 }))
 app.use(express.json());
-app.use(express.urlencoded({extended:true}))
+app.set("trust proxy", 1)
+app.use(express.urlencoded({ extended: true }))
 app.use(cors({
-    origin:envVars.FRONTEND_URL,
-    credentials:true
+    origin: envVars.FRONTEND_URL,
+    credentials: true
 }))
 app.use(passport.initialize())
 app.use(passport.session())
