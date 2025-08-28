@@ -5,9 +5,9 @@ const tourTypeSchema = new Schema<ITourType>({
     name: { type: String, required: true, unique: true }
 }, {
     timestamps: true
-})
+});
 
-export const TourType = model<ITourType>("TourType", tourTypeSchema)
+export const TourType = model<ITourType>("TourType", tourTypeSchema);
 
 const tourSchema = new Schema<ITour>({
     title: { type: String, required: true },
@@ -15,7 +15,7 @@ const tourSchema = new Schema<ITour>({
     description: { type: String },
     images: { type: [String], default: [] },
     location: { type: String },
-    costFrom: { type: Number },
+    costFrom: { type: Number, required: true }, // 🔹 required now
     startDate: { type: Date },
     endDate: { type: Date },
     departureLocation: { type: String },
@@ -38,44 +38,34 @@ const tourSchema = new Schema<ITour>({
     }
 }, {
     timestamps: true
-})
+});
 
-
-tourSchema.pre("save", async function (next) {
-
+tourSchema.pre("save", async function(next) {
     if (this.isModified("title")) {
-        const baseSlug = this.title.toLowerCase().split(" ").join("-")
-        let slug = `${baseSlug}`
-
+        const baseSlug = this.title.toLowerCase().split(" ").join("-");
+        let slug = `${baseSlug}`;
         let counter = 0;
         while (await Tour.exists({ slug })) {
-            slug = `${slug}-${counter++}` 
+            slug = `${slug}-${counter++}`;
         }
-
         this.slug = slug;
     }
-    next()
-})
+    next();
+});
 
-tourSchema.pre("findOneAndUpdate", async function (next) {
-    const tour = this.getUpdate() as Partial<ITour>
-
+tourSchema.pre("findOneAndUpdate", async function(next) {
+    const tour = this.getUpdate() as Partial<ITour>;
     if (tour.title) {
-        const baseSlug = tour.title.toLowerCase().split(" ").join("-")
-        let slug = `${baseSlug}`
-
-
+        const baseSlug = tour.title.toLowerCase().split(" ").join("-");
+        let slug = `${baseSlug}`;
         let counter = 0;
         while (await Tour.exists({ slug })) {
-            slug = `${slug}-${counter++}` 
+            slug = `${slug}-${counter++}`;
         }
-
-        tour.slug = slug
+        tour.slug = slug;
     }
+    this.setUpdate(tour);
+    next();
+});
 
-    this.setUpdate(tour)
-
-    next()
-})
-
-export const Tour = model<ITour>("Tour", tourSchema)
+export const Tour = model<ITour>("Tour", tourSchema);
